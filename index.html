@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 💜</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#1a0533 0%,#2d0a5c 40%,#1a1050 100%);min-height:100vh;color:white;overflow-x:hidden;}
+
+/* Stars */
+.stars{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;z-index:0;}
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--d,3s) infinite alternate;}
+@keyframes twinkle{from{opacity:0.2;transform:scale(1);}to{opacity:1;transform:scale(1.4);}}
+
+/* Confetti */
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:2px;animation:fall linear infinite;pointer-events:none;z-index:1;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0.3;}}
+
+/* Floating hearts */
+.heart{position:fixed;font-size:16px;animation:floatUp linear infinite;pointer-events:none;z-index:1;}
+@keyframes floatUp{0%{transform:translateY(100vh) rotate(-10deg);opacity:0.8;}100%{transform:translateY(-10vh) rotate(10deg);opacity:0;}}
+
+/* Pages */
+.page{display:none;position:relative;z-index:2;min-height:100vh;padding:40px 20px;align-items:center;justify-content:center;flex-direction:column;}
+.page.active{display:flex;}
+
+/* Hero */
+.hero-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:8px 20px;font-size:13px;letter-spacing:1px;margin-bottom:20px;color:rgba(255,255,255,0.7);}
+.hero-name{font-family:'Pacifico',cursive;font-size:clamp(40px,10vw,76px);background:linear-gradient(135deg,#d4a8ff,#a78bfa,#c084fc,#f0abfc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;line-height:1.2;margin-bottom:12px;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:10px;text-align:center;}
+.nicknames{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
+.nickname-pill{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:6px 16px;font-size:13px;color:#d4a8ff;}
+.big-cake{font-size:76px;margin-bottom:28px;filter:drop-shadow(0 0 20px rgba(192,132,252,0.5));animation:bounce 2s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+/* Buttons */
+.btn{background:linear-gradient(135deg,#7c3aed,#a855f7,#c084fc);border:none;border-radius:50px;padding:14px 36px;font-family:'Quicksand',sans-serif;font-size:15px;font-weight:700;color:white;cursor:pointer;transition:all 0.3s ease;box-shadow:0 0 30px rgba(167,139,250,0.35);margin:5px;}
+.btn:hover{transform:scale(1.05) translateY(-2px);box-shadow:0 0 40px rgba(167,139,250,0.55);}
+.btn-ghost{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.25);border-radius:50px;padding:10px 24px;font-size:14px;font-weight:600;color:white;cursor:pointer;margin:5px;}
+.btn-ghost:hover{background:rgba(255,255,255,0.15);}
+
+/* Cards */
+.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:32px;width:100%;max-width:520px;margin-bottom:24px;}
+.card-icon{font-size:40px;margin-bottom:16px;display:block;}
+.card-title{font-family:'Pacifico',cursive;font-size:24px;color:#d4a8ff;margin-bottom:14px;}
+.card-body{font-size:15px;line-height:1.9;color:rgba(255,255,255,0.8);}
+
+/* Reasons */
+.reasons-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:520px;width:100%;margin-bottom:24px;}
+.reason-card{background:rgba(255,255,255,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:18px;padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.3s ease;}
+.reason-card:hover{background:rgba(167,139,250,0.12);transform:translateY(-3px);border-color:rgba(167,139,250,0.45);}
+.reason-card.revealed{background:linear-gradient(135deg,rgba(124,58,237,0.25),rgba(168,85,247,0.15));border-color:rgba(192,132,252,0.45);}
+.reason-emoji{font-size:30px;margin-bottom:8px;display:block;}
+.reason-hint{font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:6px;}
+.reason-text{font-size:13px;color:rgba(255,255,255,0.82);line-height:1.6;display:none;}
+
+/* Memories */
+.memories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;width:100%;max-width:800px;margin-bottom:20px;}
+.memories-grid img{width:100%;border-radius:12px;object-fit:cover;}
+
+/* Secret */
+#pass{padding:10px;border-radius:10px;border:none;margin-top:10px;}
+
+/* Wish */
+.wish-box{background:linear-gradient(135deg,rgba(124,58,237,0.18),rgba(192,132,252,0.08));border:1px solid rgba(192,132,252,0.3);border-radius:28px;padding:40px 32px;max-width:520px;width:100%;text-align:center;}
+.wish-title{font-family:'Pacifico',cursive;font-size:30px;background:linear-gradient(135deg,#f0abfc,#d4a8ff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px;}
+.wish-text{font-size:15px;line-height:1.95;color:rgba(255,255,255,0.82);margin-bottom:20px;}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="page active" id="page-0">
+  <div class="hero-badge">made just for you</div>
+  <div class="big-cake">🎂</div>
+  <div class="hero-name">Happy Birthday,<br>Angela!</div>
+  <div class="hero-sub">aka</div>
+  <div class="nicknames">
+    <span class="nickname-pill">Anges</span>
+    <span class="nickname-pill">Everleigh</span>
+    <span class="nickname-pill">Angela</span>
+  </div>
+  <button class="btn" onclick="goTo(1)">Open your gift 🎁</button>
+</div>
+
+<div class="page" id="page-1">
+  <div class="card">
+    <span class="card-icon">💌</span>
+    <div class="card-title">Hey, Anges.</div>
+    <div class="card-body">
+      I made this for you — something small to show you matter 😊
+    </div>
+  </div>
+  <button class="btn" onclick="goTo(2)">Next ➡️</button>
+</div>
+
+<div class="page" id="page-2">
+  <div class="reasons-grid">
+    <div class="reason-card" onclick="revealReason(this)"><span class="reason-emoji">😂</span><div class="reason-hint">tap</div><div class="reason-text">You’re genuinely funny</div></div>
+    <div class="reason-card" onclick="revealReason(this)"><span class="reason-emoji">💜</span><div class="reason-hint">tap</div><div class="reason-text">You care about people</div></div>
+    <div class="reason-card" onclick="revealReason(this)"><span class="reason-emoji">✨</span><div class="reason-hint">tap</div><div class="reason-text">You are unique</div></div>
+    <div class="reason-card" onclick="revealReason(this)"><span class="reason-emoji">🌙</span><div class="reason-hint">tap</div><div class="reason-text">Talking to you feels easy</div></div>
+    <div class="reason-card" onclick="revealReason(this)"><span class="reason-emoji">💪</span><div class="reason-hint">tap</div><div class="reason-text">You are strong</div></div>
+    <div class="reason-card" onclick="revealReason(this)"><span class="reason-emoji">🎯</span><div class="reason-hint">tap</div><div class="reason-text">You’re memorable</div></div>
+  </div>
+  <button class="btn" onclick="goTo(3)">Next ➡️</button>
+</div>
+
+<div class="page" id="page-3">
+  <div class="memories-grid">
+    <img src="photo1.jpg">
+    <img src="photo2.jpg">
+    <img src="photo3.jpg">
+    <img src="photo4.jpg">
+    <!-- Add more photos as needed -->
+  </div>
+  <button class="btn" onclick="goTo(4)">Next ➡️</button>
+</div>
+
+<div class="page" id="page-4">
+  <p>🔒 Secret: Enter password</p>
+  <input type="password" id="pass" placeholder="Enter password">
+  <button class="btn" onclick="checkPass()">Unlock 💌</button>
+  <p id="wrong"></p>
+</div>
+
+<div class="page" id="page-5">
+  <div class="wish-box">
+    <div class="wish-title">Final Wish 🎂</div>
+    <div class="wish-text">I hope you stay happy 💜 and I hope I can be part of your smiles 😊</div>
+    <button class="btn" onclick="confetti()">Celebrate 🎉</button>
+    <button class="btn-ghost" onclick="playOtherMusic()">Play Me 🎵</button>
+  </div>
+</div>
+
+<audio id="bgm" loop autoplay>
+  <source src="C:/Users/Rain Cliearth/Downloads/[TJ노래방] Star - 콜드(COLDCANDY) _ TJ Karaoke [v3zc8v1lcpU].mp3" type="audio/mpeg">
+</audio>
+<audio id="otherMusic">
+  <source src="C:/Users/Rain Cliearth/Downloads/otherSong.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const stars=document.getElementById("stars");
+for(let i=0;i<50;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.width=s.style.height=Math.random()*3+1+"px";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.setProperty("--d",(Math.random()*3+1)+"s");
+  stars.appendChild(s);
+}
+
+// Floating hearts
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💜";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+},700);
+
+// Confetti
+function confetti(){
+  for(let i=0;i<100;i++){
+    let c=document.createElement("div");
+    c.className="confetti-piece";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},70%,70%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),7000);
+  }
+}
+
+// Page navigation
+function goTo(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  if(id===5){ startConfettiLoop(); }
+}
+
+// Reveal reason
+function revealReason(el){
+  el.querySelector(".reason-text").style.display="block";
+  el.classList.add("revealed");
+}
+
+// Secret password
+function checkPass(){
+  const pass=document.getElementById("pass").value;
+  if(pass==="everleigh"){ goTo(5); }
+  else{ document.getElementById("wrong").innerText="Wrong password 💔"; }
+}
+
+// Music control
+function playOtherMusic(){
+  document.getElementById("bgm").pause();
+  document.getElementById("otherMusic").play();
+}
+
+// Confetti loop for final page
+let confettiInterval;
+function startConfettiLoop(){
+  if(confettiInterval) return;
+  confettiInterval=setInterval(confetti,2000);
+}
+
+// Mobile autoplay
+document.body.addEventListener("click",()=>{ document.getElementById("bgm").play(); },{once:true});
+</script>
+
+</body>
+</html>
